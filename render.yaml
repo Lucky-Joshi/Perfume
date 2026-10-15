@@ -41,16 +41,3 @@ services:
         sync: false
       - key: EMAIL_FROM
         value: "Essence Aura <no-reply@essenceaura.com>"
-
-staticSites:
-  - name: essence-aura-frontend
-    rootDir: frontend
-    buildCommand: npm run build
-    publishDir: dist
-    buildFilter:
-      paths:
-        - frontend/**
-    redirects:
-      - source: "/*"
-        destination: "/index.html"
-        status: 200

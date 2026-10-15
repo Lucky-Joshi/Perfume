@@ -7,16 +7,16 @@
   NODE_VERSION = "24.7.0"
 
 # Proxy API + uploads to the deployed backend so the SPA can use same-origin
-# relative URLs (baseURL "/api"). Update the host below to your Render URL.
+# relative URLs (baseURL "/api").
 [[redirects]]
   from = "/api/*"
-  to = "https://essence-aura-api.onrender.com/api/:splat"
+  to = "https://perfume-mx9m.onrender.com/api/:splat"
   status = 200
   force = true
 
 [[redirects]]
   from = "/uploads/*"
-  to = "https://essence-aura-api.onrender.com/uploads/:splat"
+  to = "https://perfume-mx9m.onrender.com/uploads/:splat"
   status = 200
   force = true
 
