@@ -60,13 +60,18 @@ Express + Supabase REST API.
 | Variable                     | Required | Description                                        |
 | ---------------------------- | -------- | -------------------------------------------------- |
 | `PORT`                       | no       | API port (default 5000)                            |
+| `NODE_ENV`                   | no       | `production` enables secure cookies                |
 | `SUPABASE_URL`               | yes      | Supabase project URL                               |
+| `SUPABASE_ANON_KEY`          | no       | Supabase anon key                                  |
 | `SUPABASE_SERVICE_ROLE_KEY`  | yes      | Service-role key (bypasses RLS)                    |
-| `JWT_SECRET`                 | yes      | Access-token signing secret                        |
-| `REFRESH_TOKEN_SECRET`       | yes      | Refresh-token signing secret                       |
-| `MAILTRAP_HOST` / `USER` / `PASS` | no | SMTP creds for sending real order/contact mail |
+| `JWT_ACCESS_SECRET`          | yes      | Access-token signing secret                        |
+| `JWT_REFRESH_SECRET`         | yes      | Refresh-token signing secret                       |
+| `JWT_ACCESS_EXPIRES`         | no       | e.g. `15m`                                         |
+| `JWT_REFRESH_EXPIRES`        | no       | e.g. `7d`                                          |
+| `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_USER` / `EMAIL_PASS` | no | SMTP creds for outbound mail |
+| `EMAIL_FROM`                 | no       | From address for outbound mail                     |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` | no  | Bootstrap admin credentials (see seed)             |
-| `CLIENT_URL`                 | no       | Frontend origin for email links (default :3000)    |
+| `FRONTEND_URL`               | no       | Frontend origin for email links (default :3000)    |
 
 ## Notable Features
 
