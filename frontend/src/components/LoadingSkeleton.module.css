@@ -1,0 +1,55 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 40px;
+}
+
+.card {
+  padding: 0 0 24px;
+}
+
+.block {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 2px;
+}
+
+.image {
+  aspect-ratio: 3 / 4;
+  margin-bottom: 20px;
+}
+
+.lineShort {
+  height: 12px;
+  width: 30%;
+  margin-bottom: 12px;
+}
+
+.lineTitle {
+  height: 20px;
+  width: 60%;
+  margin-bottom: 12px;
+}
+
+.lineMedium {
+  height: 14px;
+  width: 80%;
+  margin-bottom: 24px;
+}
+
+.bottomRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.price {
+  height: 24px;
+  width: 80px;
+}
+
+.btn {
+  height: 44px;
+  width: 44px;
+}

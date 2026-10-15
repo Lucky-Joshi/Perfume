@@ -1,0 +1,17 @@
+.products {
+  display: grid;
+  gap: 40px;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  padding: 60px 20px;
+}
+
+@media (max-width: 768px) {
+  .products {
+    gap: 24px;
+  }
+}

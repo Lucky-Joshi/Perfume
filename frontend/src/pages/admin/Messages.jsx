@@ -1,0 +1,166 @@
+import React, { useEffect, useState, useCallback } from 'react';
+import { adminAPI } from '../../api/adminAPI';
+import { formatDateTime } from '../../utils/format';
+import styles from './admin.module.css';
+
+function Messages() {
+  const [list, setList] = useState([]);
+  const [meta, setMeta] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [page, setPage] = useState(1);
+  const [expanded, setExpanded] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [confirm, setConfirm] = useState(null);
+
+  const limit = 10;
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await adminAPI.listMessages({ page, limit });
+      setList(res.list || []);
+      setMeta(res.meta);
+    } catch (e) {
+      setError(e.message || 'Failed to load messages.');
+    } finally {
+      setLoading(false);
+    }
+  }, [page, limit]);
+
+  useEffect(() => {
+    document.title = 'Messages | Essence Aura Admin';
+    load();
+  }, [load]);
+
+  const toggleRead = async (m) => {
+    setBusyId(m.id);
+    try {
+      await adminAPI.markMessageRead(m.id, !m.read);
+      load();
+    } catch (e) {
+      setError(e.message || 'Failed to update message.');
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm) return;
+    setBusyId(confirm.id);
+    try {
+      await adminAPI.deleteMessage(confirm.id);
+      setConfirm(null);
+      load();
+    } catch (e) {
+      setError(e.message || 'Failed to delete message.');
+      setConfirm(null);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <div>
+      <div className={styles.topbar}>
+        <div>
+          <h1 className={styles.pageTitle}>Messages</h1>
+          <p className={styles.pageSub}>{meta ? `${meta.total} contact form submissions` : 'Contact form submissions'}</p>
+        </div>
+      </div>
+
+      <div className={styles.card}>
+        {error && <div className={`${styles.message} ${styles.fail}`}>{error}</div>}
+        <div className={styles.tableWrap}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>From</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.map((m) => (
+                <React.Fragment key={m.id}>
+                  <tr style={!m.read ? { background: '#fdf9ef' } : {}}>
+                    <td>
+                      <div className={styles.cellTitle}>{m.read ? m.name : <strong>{m.name}</strong>}</div>
+                      <div className={styles.cellSub}>{m.email}</div>
+                    </td>
+                    <td>{m.subject || '—'}</td>
+                    <td>
+                      {m.read
+                        ? <span className={`${styles.badge} ${styles.badgeGray}`}>Read</span>
+                        : <span className={`${styles.badge} ${styles.badgeGold}`}>Unread</span>}
+                    </td>
+                    <td className={styles.cellSub}>{formatDateTime(m.created_at)}</td>
+                    <td>
+                      <button className={styles.btnLink} onClick={() => setExpanded(expanded === m.id ? null : m.id)}>
+                        {expanded === m.id ? 'Hide' : 'View'}
+                      </button>
+                    </td>
+                    <td>
+                      <div className={styles.actions}>
+                        <button className={styles.btnLink} disabled={busyId === m.id} onClick={() => toggleRead(m)}>
+                          {m.read ? 'Mark unread' : 'Mark read'}
+                        </button>
+                        <button className={`${styles.iconBtn} ${styles.iconBtnDanger}`} title="Delete" onClick={() => setConfirm({ id: m.id })}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {expanded === m.id && (
+                    <tr>
+                      <td colSpan={6}>
+                        <div style={{ padding: '8px 8px 18px', fontSize: 14, lineHeight: 1.7 }}>
+                          <strong>{m.subject || 'No subject'}</strong>
+                          <p style={{ color: 'var(--color-text)', marginTop: 8, whiteSpace: 'pre-wrap' }}>{m.message}</p>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+              {!loading && list.length === 0 && (
+                <tr><td colSpan={6} className={styles.empty}>No messages yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {loading && <div className={styles.empty}>Loading messages...</div>}
+
+        {meta && meta.pages > 1 && (
+          <div className={styles.pagination}>
+            <button className={styles.pageBtn} disabled={page <= 1} onClick={() => setPage(page - 1)}>Previous</button>
+            <span className={styles.pageInfo}>Page {meta.page} of {meta.pages}</span>
+            <button className={styles.pageBtn} disabled={page >= meta.pages} onClick={() => setPage(page + 1)}>Next</button>
+          </div>
+        )}
+      </div>
+
+      {confirm && (
+        <div className={styles.modal}>
+          <div className={styles.modalCard}>
+            <h3 className={styles.modalTitle}>Delete Message</h3>
+            <p className={styles.modalText}>Delete this message permanently?</p>
+            <div className={styles.modalActions}>
+              <button className={`${styles.btn} ${styles.btnOutline}`} onClick={() => setConfirm(null)}>Cancel</button>
+              <button className={`${styles.btn} ${styles.btnDanger}`} onClick={handleDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Messages;

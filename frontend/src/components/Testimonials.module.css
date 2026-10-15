@@ -1,0 +1,110 @@
+.section {
+  background: var(--color-primary);
+  padding: 100px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=400&fit=crop') center/cover;
+  opacity: 0.04;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 2;
+}
+
+.content {
+  text-align: center;
+  color: white;
+}
+
+.quoteIcon {
+  color: var(--color-accent);
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.quote {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-style: italic;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 32px;
+  min-height: 120px;
+  animation: fadeInUp 0.5s ease;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.name {
+  font-weight: 600;
+  color: white;
+  font-size: 15px;
+}
+
+.role {
+  font-size: 13px;
+  color: var(--color-accent);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.activeDot {
+  background: var(--color-accent);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 0;
+  }
+
+  .quote {
+    min-height: 140px;
+    font-size: 16px;
+  }
+}
