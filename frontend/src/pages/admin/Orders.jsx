@@ -94,14 +94,13 @@ function Orders() {
             <tbody>
               {list.map((o) => {
                 const items = o.items || [];
-                const subtotal = items.reduce((s, i) => s + (Number(i.price) * Number(i.quantity || 1)), 0);
                 return (
                   <React.Fragment key={o.id}>
                     <tr>
                       <td className={styles.cellTitle}>{o.id}</td>
                       <td>{o.user?.email || '—'}</td>
                       <td className={styles.cellSub}>{items.length} item(s)</td>
-                      <td>{formatMoney(Number(o.total))}</td>
+                      <td>{formatMoney(Number(o.total_amount))}</td>
                       <td className={styles.cellSub}>{o.payment_method}</td>
                       <td>
                         <select
@@ -130,14 +129,14 @@ function Orders() {
                             {items.map((i) => (
                               <div key={i.id} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '8px 0', borderBottom: '1px solid var(--color-border)', fontSize: 14 }}>
                                 <div>
-                                  {i.product?.name || i.product_name || 'Product'} <span className={styles.cellSub}>× {i.quantity} ({i.size})</span>
+                                  {i.product?.name || i.product_name || 'Product'} <span className={styles.cellSub}>× {i.quantity} ({i.variant || 'Standard'})</span>
                                 </div>
-                                <span>{formatMoney(Number(i.price) * Number(i.quantity || 1))}</span>
+                                <span>{formatMoney(Number(i.line_total ?? (Number(i.unit_price) * Number(i.quantity || 1))))}</span>
                               </div>
                             ))}
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12, fontSize: 14 }}>
-                              <span className={styles.cellSub}>Shipping: {o.shipping_address?.city}, {o.shipping_address?.country}</span>
-                              <span className={styles.cellTitle}>Total {formatMoney(Number(o.total))}</span>
+                              <span className={styles.cellSub}>Shipping: {[o.shipping_city, o.shipping_country].filter(Boolean).join(', ') || '—'}</span>
+                              <span className={styles.cellTitle}>Total {formatMoney(Number(o.total_amount))}</span>
                             </div>
                           </div>
                         </td>

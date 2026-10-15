@@ -8,7 +8,7 @@ const router = Router();
 
 // Public contact form + newsletter
 router.post(
-  '/contact',
+  '/',
   contactLimiter,
   validate([
     body('name').notEmpty().withMessage('Name is required.'),

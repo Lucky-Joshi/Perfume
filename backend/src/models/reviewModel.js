@@ -8,7 +8,7 @@ export const reviewModel = {
     const { data, error } = await supabase
       .from('reviews')
       .insert({ product_id, user_id, rating, title, comment })
-      .select('*, user:profiles(first_name, last_name)')
+      .select('*, user:users(email, profile:profiles(first_name, last_name))')
       .single();
     if (error) throw error;
     return data;
@@ -28,7 +28,7 @@ export const reviewModel = {
   async findForProduct(productId, { page = 1, limit = 10 } = {}) {
     const { data, count, error } = await supabase
       .from('reviews')
-      .select('*, user:profiles(first_name, last_name)', { count: 'exact' })
+      .select('*, user:users(email, profile:profiles(first_name, last_name))', { count: 'exact' })
       .eq('product_id', productId)
       .eq('status', 'approved')
       .order('created_at', { ascending: false })
@@ -40,7 +40,7 @@ export const reviewModel = {
   async findAll({ page, limit, status, search } = {}) {
     let query = supabase
       .from('reviews')
-      .select('*, product:products(name, slug), user:profiles(first_name, last_name)', { count: 'exact' })
+      .select('*, product:products(name, slug), user:users(email, profile:profiles(first_name, last_name))', { count: 'exact' })
       .order('created_at', { ascending: false });
 
     if (status && status !== 'all') query = query.eq('status', status);

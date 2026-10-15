@@ -142,7 +142,7 @@ function Dashboard() {
                 <tr key={o.id}>
                   <td className={styles.cellTitle}>{o.id}</td>
                   <td>{o.user?.email || '—'}</td>
-                  <td>{formatMoney(Number(o.total))}</td>
+                  <td>{formatMoney(Number(o.total_amount))}</td>
                   <td><span className={`${styles.badge} ${statusBadge(o.status)}`}>{o.status}</span></td>
                   <td className={styles.cellSub}>{formatDate(o.created_at)}</td>
                 </tr>

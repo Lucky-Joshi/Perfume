@@ -26,9 +26,21 @@ export const settingsModel = {
 
 export const activityModel = {
   async log({ user_id, admin_id, action, entity, entity_id, meta = null }) {
+    // `activity_logs.admin_id` references `admins(id)`, but callers pass the
+    // authenticated user id — resolve it to the matching admins row.
+    let resolvedAdminId = null;
+    if (admin_id) {
+      const { data: adminRow } = await supabase
+        .from('admins')
+        .select('id')
+        .eq('user_id', admin_id)
+        .maybeSingle();
+      resolvedAdminId = adminRow?.id || null;
+    }
+
     const { error } = await supabase.from('activity_logs').insert({
-      user_id,
-      admin_id,
+      user_id: user_id || null,
+      admin_id: resolvedAdminId,
       action,
       entity,
       entity_id,
@@ -40,7 +52,7 @@ export const activityModel = {
   async findAll({ limit = 30 } = {}) {
     const { data, error } = await supabase
       .from('activity_logs')
-      .select('*, admin:admins(display_name), user:profiles(first_name, last_name)')
+      .select('*, admin:admins(display_name), user:users(email, profile:profiles(first_name, last_name))')
       .order('created_at', { ascending: false })
       .limit(limit);
     if (error) throw error;
